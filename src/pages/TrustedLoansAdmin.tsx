@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from 'date-fns';
 import { useToast } from "@/hooks/use-toast";
+import DemographicInsights from "@/components/trustedloans/DemographicInsights";
 
 interface LatestApplication {
   id: string;
@@ -207,6 +208,39 @@ const TrustedLoansAdmin = () => {
             </motion.div>
           </div>
 
+          {/* Demographic Insights */}
+          <DemographicInsights />
+
+          {/* Quick Actions Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6"
+          >
+            <div className="flex items-center gap-3 text-[#0FA0CE] mb-6">
+              <Settings className="w-5 h-5" />
+              <span className="font-medium">Quick Actions</span>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button className="p-4 rounded-lg bg-white border border-[#0FA0CE] text-[#0FA0CE] font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+                <Users className="w-5 h-5" />
+                Review Applications
+              </button>
+              
+              <button className="p-4 rounded-lg bg-white border border-[#0FA0CE] text-[#0FA0CE] font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+                <FileText className="w-5 h-5" />
+                Generate Reports
+              </button>
+              
+              <button className="p-4 rounded-lg bg-white border border-[#0FA0CE] text-[#0FA0CE] font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+                <Database className="w-5 h-5" />
+                System Settings
+              </button>
+            </div>
+          </motion.div>
+
           {/* Development Tools Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -270,36 +304,6 @@ const TrustedLoansAdmin = () => {
                 </div>
               </CollapsibleContent>
             </Collapsible>
-          </motion.div>
-
-          {/* Quick Actions Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-lg p-6 shadow-sm border border-gray-100"
-          >
-            <div className="flex items-center gap-3 text-[#0FA0CE] mb-6">
-              <Settings className="w-5 h-5" />
-              <span className="font-medium">Quick Actions</span>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <button className="p-4 rounded-lg bg-white border border-[#0FA0CE] text-[#0FA0CE] font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
-                <Users className="w-5 h-5" />
-                Review Applications
-              </button>
-              
-              <button className="p-4 rounded-lg bg-white border border-[#0FA0CE] text-[#0FA0CE] font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
-                <FileText className="w-5 h-5" />
-                Generate Reports
-              </button>
-              
-              <button className="p-4 rounded-lg bg-white border border-[#0FA0CE] text-[#0FA0CE] font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
-                <Database className="w-5 h-5" />
-                System Settings
-              </button>
-            </div>
           </motion.div>
         </div>
       </div>
