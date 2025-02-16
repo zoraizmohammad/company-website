@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import { useToast } from "@/hooks/use-toast";
 import SecurityInfo from "@/components/SecurityInfo";
 import { getPersonalLoanData, generateUserRawOutputLoan } from "@/constants/loanVectorMappings";
+import { supabase } from "@/integrations/supabase/client";
 
 const initialFormData = {
   personal: {
@@ -127,7 +128,7 @@ const TrustedLoans = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { race, ethnicity, gender, maritalStatus, ageGroup } = formData.demographics;
     if (!race || !ethnicity || !gender || !maritalStatus || !ageGroup) {
@@ -139,20 +140,66 @@ const TrustedLoans = () => {
       return;
     }
 
-    // Get raw personal loan data
-    const personalLoanData = getPersonalLoanData({
-      ...formData.personal,
-      ...formData.employment
-    });
+    try {
+      // Insert personal and employment data into Supabase
+      const { error } = await supabase
+        .from('loan_applications')
+        .insert({
+          full_name: formData.personal.fullName,
+          date_of_birth: formData.personal.dateOfBirth,
+          ssn: formData.personal.ssn,
+          address: formData.personal.address,
+          city: formData.personal.city,
+          state: formData.personal.state,
+          zip_code: formData.personal.zipCode,
+          phone: formData.personal.phone,
+          email: formData.personal.email,
+          employment_status: formData.employment.status,
+          employer_name: formData.employment.employerName,
+          employer_phone: formData.employment.employerPhone,
+          annual_income: formData.employment.annualIncome,
+          loan_amount: formData.employment.loanAmount,
+          loan_purpose: formData.employment.loanPurpose
+        });
 
-    // Generate demographic vector
-    const userRawOutputLoan = generateUserRawOutputLoan(formData.demographics);
+      if (error) {
+        console.error('Error saving loan application:', error);
+        toast({
+          title: "Error",
+          description: "There was an error submitting your application. Please try again.",
+          className: "bg-white text-black border border-black",
+        });
+        return;
+      }
 
-    // Output data to console
-    console.log('Personal & Loan Data:', personalLoanData);
-    console.log('User Raw Output Loan Vector:', userRawOutputLoan);
+      // Get raw personal loan data for console logging
+      const personalLoanData = getPersonalLoanData({
+        ...formData.personal,
+        ...formData.employment
+      });
 
-    setIsSubmitted(true);
+      // Generate demographic vector for console logging
+      const userRawOutputLoan = generateUserRawOutputLoan(formData.demographics);
+
+      // Output data to console
+      console.log('Personal & Loan Data:', personalLoanData);
+      console.log('User Raw Output Loan Vector:', userRawOutputLoan);
+
+      toast({
+        title: "Success",
+        description: "Your loan application has been submitted successfully.",
+        className: "bg-white text-black border border-black",
+      });
+
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Error in submission:', error);
+      toast({
+        title: "Error",
+        description: "There was an error submitting your application. Please try again.",
+        className: "bg-white text-black border border-black",
+      });
+    }
   };
 
   const calculateSectionCompletion = (section: 'personal' | 'employment' | 'demographics') => {

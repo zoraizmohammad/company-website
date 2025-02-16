@@ -60,6 +60,66 @@ export type Database = {
         }
         Relationships: []
       }
+      loan_applications: {
+        Row: {
+          address: string
+          annual_income: number
+          city: string
+          created_at: string
+          date_of_birth: string
+          email: string
+          employer_name: string
+          employer_phone: string
+          employment_status: string
+          full_name: string
+          id: string
+          loan_amount: number
+          loan_purpose: string
+          phone: string
+          ssn: string
+          state: string
+          zip_code: string
+        }
+        Insert: {
+          address: string
+          annual_income: number
+          city: string
+          created_at?: string
+          date_of_birth: string
+          email: string
+          employer_name: string
+          employer_phone: string
+          employment_status: string
+          full_name: string
+          id?: string
+          loan_amount: number
+          loan_purpose: string
+          phone: string
+          ssn: string
+          state: string
+          zip_code: string
+        }
+        Update: {
+          address?: string
+          annual_income?: number
+          city?: string
+          created_at?: string
+          date_of_birth?: string
+          email?: string
+          employer_name?: string
+          employer_phone?: string
+          employment_status?: string
+          full_name?: string
+          id?: string
+          loan_amount?: number
+          loan_purpose?: string
+          phone?: string
+          ssn?: string
+          state?: string
+          zip_code?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
