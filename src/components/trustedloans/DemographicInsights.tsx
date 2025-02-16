@@ -1,7 +1,9 @@
-
 import { BarChart, Bar, Cell, PieChart, Pie, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ScatterChart, Scatter, XAxis, YAxis, ZAxis, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { useState } from 'react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const ageData = [
   { subject: '18-24', A: 30, fulltime: 20, parttime: 10 },
@@ -90,6 +92,36 @@ const COLORS = {
 };
 
 const DemographicInsights = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const calculateAgeStats = () => {
+    const total = ageData.reduce((acc, curr) => acc + curr.A, 0);
+    const largestGroup = ageData.reduce((prev, curr) => prev.A > curr.A ? prev : curr);
+    return {
+      total,
+      average: (total / ageData.length).toFixed(1),
+      largestGroup: `${largestGroup.subject} (${largestGroup.A}%)`
+    };
+  };
+
+  const calculateEthnicityStats = () => {
+    const total = ethnicityData.reduce((acc, curr) => acc + curr.value, 0);
+    const avgGrowth = ethnicityData.reduce((acc, curr) => acc + curr.growth, 0) / ethnicityData.length;
+    const mostDiverse = ethnicityData.reduce((prev, curr) => 
+      Object.keys(prev.subgroups).length > Object.keys(curr.subgroups).length ? prev : curr
+    );
+    return {
+      total,
+      avgGrowth: avgGrowth.toFixed(1),
+      mostDiverse: `${mostDiverse.name} (${Object.keys(mostDiverse.subgroups).length} subgroups)`
+    };
+  };
+
+  const ageStats = calculateAgeStats();
+  const ethnicityStats = calculateEthnicityStats();
+  const genderTotal = genderData.reduce((acc, curr) => acc + curr.value, 0);
+  const maritalTotal = maritalStatusData.reduce((acc, curr) => acc + curr.value, 0);
+
   return (
     <div className="space-y-6 mb-8">
       <motion.h2 
@@ -275,6 +307,76 @@ const DemographicInsights = () => {
           </Card>
         </motion.div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+      >
+        <Collapsible
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm"
+        >
+          <CollapsibleTrigger className="flex items-center justify-between w-full">
+            <span className="text-lg font-medium text-[#0FA0CE]">Aggregate Demographic Statistics Summary</span>
+            {isOpen ? (
+              <ChevronUp className="h-5 w-5 text-[#0FA0CE]" />
+            ) : (
+              <ChevronDown className="h-5 w-5 text-[#0FA0CE]" />
+            )}
+          </CollapsibleTrigger>
+          
+          <CollapsibleContent className="mt-4 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="font-medium text-[#0FA0CE] mb-2">Age Distribution</h3>
+                <ul className="space-y-2 text-gray-700">
+                  <li>• Average age group representation: {ageStats.average}%</li>
+                  <li>• Largest age group: {ageStats.largestGroup}</li>
+                  <li>• Total sample size: {ageStats.total}%</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="font-medium text-[#0FA0CE] mb-2">Gender Distribution</h3>
+                <ul className="space-y-2 text-gray-700">
+                  <li>• Total respondents: {genderTotal}%</li>
+                  <li>• Male to Female ratio: {(genderData[0].value / genderData[1].value).toFixed(2)}</li>
+                  <li>• Non-binary representation: {genderData[2].value}%</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="font-medium text-[#0FA0CE] mb-2">Ethnicity Insights</h3>
+                <ul className="space-y-2 text-gray-700">
+                  <li>• Average YoY growth: {ethnicityStats.avgGrowth}%</li>
+                  <li>• Most diverse category: {ethnicityStats.mostDiverse}</li>
+                  <li>• Total representation: {ethnicityStats.total}%</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="font-medium text-[#0FA0CE] mb-2">Marital Status Overview</h3>
+                <ul className="space-y-2 text-gray-700">
+                  <li>• Total responses: {maritalTotal}%</li>
+                  <li>• Marriage rate: {maritalStatusData[1].value}%</li>
+                  <li>• Single percentage: {maritalStatusData[0].value}%</li>
+                </ul>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className="mt-8 mb-4"
+      >
+        <h2 className="text-xl font-semibold text-[#0FA0CE]">More Application Tools</h2>
+      </motion.div>
     </div>
   );
 };
