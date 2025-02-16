@@ -368,15 +368,6 @@ const DemographicInsights = () => {
           </CollapsibleContent>
         </Collapsible>
       </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-        className="mt-8 mb-4"
-      >
-        <h2 className="text-xl font-semibold text-[#0FA0CE]">More Application Tools</h2>
-      </motion.div>
     </div>
   );
 };
